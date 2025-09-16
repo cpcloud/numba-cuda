@@ -3065,7 +3065,9 @@ class _Linker(_LinkerBase):
         )
 
     def get_linked_ptx(self):
-        self.linker = Linker(*self._object_codes, options=self._get_linker_options(ptx=True))
+        self.linker = Linker(
+            *self._object_codes, options=self._get_linker_options(ptx=True)
+        )
 
         result = self.linker.link("ptx")
         self.close()
@@ -3078,7 +3080,9 @@ class _Linker(_LinkerBase):
         self.linker.close()
 
     def complete(self):
-        self.linker = Linker(*self._object_codes, options=self._get_linker_options(ptx=False))
+        self.linker = Linker(
+            *self._object_codes, options=self._get_linker_options(ptx=False)
+        )
         result = self.linker.link("cubin")
         self.close()
         self._complete = True
