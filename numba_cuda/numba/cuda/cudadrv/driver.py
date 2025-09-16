@@ -2968,13 +2968,6 @@ class _Linker(_LinkerBase):
             lto = None
         self.lto = lto
         self.additional_flags = additional_flags
-
-        self.options = LinkerOptions(
-            max_register_count=self.max_registers,
-            lineinfo=lineinfo,
-            arch=arch,
-            link_time_optimization=lto,
-        )
         self._complete = False
         self._object_codes = []
         self.linker = None  # need at least one program
@@ -3058,16 +3051,21 @@ class _Linker(_LinkerBase):
 
         fn(data, name)
 
-    def get_linked_ptx(self):
-        options = LinkerOptions(
+    def _get_linker_options(self, ptx=False):
+        # Enable link time optimization if there is an LTO-IR object in the
+        # _object_codes list. This has to be deferred until now as it requires
+        # the full set of objects to be available.
+        has_ltoir = any(obj._code_type == "ltoir" for obj in self._object_codes)
+        return LinkerOptions(
             max_register_count=self.max_registers,
             lineinfo=self.lineinfo,
             arch=self.arch,
-            link_time_optimization=True,
-            ptx=True,
+            link_time_optimization=has_ltoir,
+            ptx=ptx and has_ltoir,
         )
 
-        self.linker = Linker(*self._object_codes, options=options)
+    def get_linked_ptx(self):
+        self.linker = Linker(*self._object_codes, options=self._get_linker_options(ptx=True))
 
         result = self.linker.link("ptx")
         self.close()
@@ -3080,7 +3078,7 @@ class _Linker(_LinkerBase):
         self.linker.close()
 
     def complete(self):
-        self.linker = Linker(*self._object_codes, options=self.options)
+        self.linker = Linker(*self._object_codes, options=self._get_linker_options(ptx=False))
         result = self.linker.link("cubin")
         self.close()
         self._complete = True
