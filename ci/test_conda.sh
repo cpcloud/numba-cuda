@@ -25,20 +25,11 @@ EXITCODE=0
 trap "EXITCODE=1" ERR
 set +e
 
-rapids-logger "Install pixi env"
-pixi install -e "${PIXI_ENV}"
-
-rapids-logger "Show shared objects"
-find numba_cuda -name '*.so'
-
 rapids-logger "Show Numba system info"
 pixi run -e "${PIXI_ENV}" python -m numba --sysinfo
 
 rapids-logger "Test importing numba.cuda"
 pixi run -e "${PIXI_ENV}" python -c "from numba import cuda"
-
-rapids-logger "Show numba_cuda installation"
-pixi list -e "${PIXI_ENV}" numba_cuda
 
 rapids-logger "Run Tests"
 pixi run -e "${PIXI_ENV}" test -n auto \
