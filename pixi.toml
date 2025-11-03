@@ -173,7 +173,6 @@ depends-on = [{ task = "build-tests" }]
 
 [target.linux.tasks.simtest]
 cmd = ["pytest", "$PIXI_PROJECT_ROOT/testing"]
-depends-on = [{ task = "build-tests" }]
 
 [target.linux.tasks.simtest.env]
 NUMBA_CUDA_TEST_BIN_DIR = "$PIXI_PROJECT_ROOT/testing"
