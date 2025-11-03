@@ -3,22 +3,14 @@
 [workspace]
 channels = ["conda-forge"]
 platforms = ["linux-64", "linux-aarch64", "win-64"]
+preview = ["pixi-build"]
 
-[pypi-dependencies]
-numba-cuda = { path = ".", editable = true }
+[workspace.build-variants]
+python = ["3.10.*", "3.11.*", "3.12.*", "3.13.*"]
 
 [dependencies]
-# core deps
-python = ">=3.9"
-numba = ">=0.60.0"
-cuda-core = ">=0.3,<0.4.0dev0"
-cuda-bindings = ">=12.9,<14"
-cuda-python = ">=12.9,<14"
-
-[feature.build.dependencies]
-cuda-compiler = "*"
-make = "*"
-cxx-compiler = "*"
+# source
+numba-cuda = { path = "." }
 
 [feature.cu.dependencies]
 cuda-nvcc = "*"
@@ -71,10 +63,12 @@ libtorch = ">=2.8"
 cupy = "*"
 
 [feature.test.dependencies]
+# for building cuda artifacts for testing
+make = "*"
 pre-commit = ">=4.3"
-psutil = ">=7.1.1"
-cffi = ">=2"
-pytest = ">=8.4.2"
+psutil = ">=6"
+cffi = ">=1"
+pytest = ">=8"
 pytest-xdist = ">=3.8"
 pytest-benchmark = ">=5.1"
 
@@ -87,14 +81,12 @@ filecheck = "*"
 cu-12-0 = { features = [
     "cu-12-0",
     "test",
-    "build",
     "cu",
     "cu-12",
 ], solve-group = "cu-12-0" }
 cu-12-2 = { features = [
     "cu-12-2",
     "test",
-    "build",
     "cu",
     "cu-12",
     "nvvm",
@@ -102,7 +94,6 @@ cu-12-2 = { features = [
 cu-12-8 = { features = [
     "cu-12-8",
     "test",
-    "build",
     "cu",
     "cu-12",
     "cu-rt",
@@ -111,7 +102,6 @@ cu-12-8 = { features = [
 cu-12-9 = { features = [
     "cu-12-9",
     "test",
-    "build",
     "bench",
     "cu",
     "cu-12",
@@ -122,7 +112,6 @@ cu-12-9 = { features = [
 cu-13-0 = { features = [
     "cu-13-0",
     "test",
-    "build",
     "cu",
     "cu-13",
     "cu-rt",
@@ -177,3 +166,29 @@ cmd = ["pytest", "$PIXI_PROJECT_ROOT/testing"]
 [target.linux.tasks.simtest.env]
 NUMBA_CUDA_TEST_BIN_DIR = "$PIXI_PROJECT_ROOT/testing"
 NUMBA_ENABLE_CUDASIM = "1"
+
+[package]
+name = "numba-cuda"
+version = "0.20.0"
+
+[package.build]
+backend = { name = "pixi-build-python", version = "*" }
+# makes the package not noarch which is required for build-variants to work and
+# because numba-cuda has c(++) extensions
+config.compilers = ["cxx"]
+
+[package.build-dependencies]
+# this can't be in `config.compilers` otherwise CUDA_HOME isn't defined
+cuda-compiler = "*"
+
+[package.host-dependencies]
+python = "*"
+setuptools = "*"
+numpy = ">=2.1"
+
+[package.run-dependencies]
+python = "*"
+numba = ">=0.60"
+cuda-core = ">=0.3,<1"
+cuda-bindings = ">=12.9,<14"
+cuda-python = ">=12.9,<14"

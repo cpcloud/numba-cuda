@@ -10,9 +10,9 @@ source rapids-date-string
 
 rapids-print-env
 
-rapids-logger "Begin py build"
+rapids-logger "Begin pixi build"
 
-rapids-conda-retry build conda/recipes/numba-cuda
+pixi build
 
-package_path=(/tmp/conda-bld-output/noarch/numba-cuda-*.tar.bz2)
-echo "package_path=$package_path" >> $GITHUB_ENV
+package_path="$(ls ./*.conda)"
+echo "package_path=$package_path" >> "$GITHUB_ENV"
