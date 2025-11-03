@@ -35,7 +35,7 @@ rapids-logger "Run Tests"
 pixi run -e "${PIXI_ENV}" test -n auto \
   --dist loadscope \
   --loadscope-reorder \
-  --benchmark-disable -v
+  -v
 
 rapids-logger "Test script exiting with value: $EXITCODE"
 exit ${EXITCODE}
