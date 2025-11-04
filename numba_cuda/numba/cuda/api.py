@@ -11,7 +11,6 @@ import os
 import numpy as np
 
 from .cudadrv import devicearray, devices, driver
-from numba.cuda.core import config
 from numba.cuda.api_util import prepare_shape_strides_dtype
 
 # NDarray device helper
@@ -48,13 +47,6 @@ def from_cuda_array_interface(desc, owner=None, sync=True):
     cudevptr_class = driver.binding.CUdeviceptr
     devptr = cudevptr_class(desc["data"][0])
     data = driver.MemoryPointer(devptr, size=size, owner=owner)
-    stream_ptr = desc.get("stream", None)
-    if stream_ptr is not None:
-        stream = external_stream(stream_ptr)
-        if sync and config.CUDA_ARRAY_INTERFACE_SYNC:
-            stream.synchronize()
-    else:
-        stream = 0  # No "Numba default stream", not the CUDA default stream
     da = devicearray.DeviceNDArray(
         shape=shape, strides=strides, dtype=dtype, gpu_data=data, stream=stream
     )
