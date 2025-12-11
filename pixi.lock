@@ -2645,7 +2645,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/cuda-bindings-12.9.4-py312h4730824_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/cuda-cccl-12.9.27-ha770c72_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cuda-cccl_linux-64-12.9.27-ha770c72_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/cuda-core-0.4.2-cuda12_py312h32364ff_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/cuda-core-0.5.0-cuda12_py312h32364ff_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cuda-crt-dev_linux-64-12.9.86-ha770c72_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/cuda-crt-tools-12.9.86-ha770c72_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/cuda-cudart-12.9.79-h5888daf_0.conda
@@ -2817,7 +2817,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/cuda-bindings-12.9.4-py312hc20e2ee_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/cuda-cccl-12.9.27-h579c4fd_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cuda-cccl_linux-aarch64-12.9.27-h579c4fd_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/cuda-core-0.4.2-cuda12_py312h9bdd1b7_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/cuda-core-0.5.0-cuda12_py312h9bdd1b7_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cuda-crt-dev_linux-aarch64-12.9.86-h579c4fd_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/cuda-crt-tools-12.9.86-h579c4fd_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/cuda-cudart-12.9.79-h3ae8b8a_0.conda
@@ -2978,7 +2978,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-bindings-12.9.4-py312hcae516c_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-cccl-12.9.27-h57928b3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cuda-cccl_win-64-12.9.27-h57928b3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.4.2-cuda12_py312hb72f0b0_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.5.0-cuda12_py312hb72f0b0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cuda-crt-dev_win-64-12.9.86-h57928b3_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-crt-tools-12.9.86-h57928b3_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-cudart-12.9.79-he0c23c2_0.conda
@@ -3387,7 +3387,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-bindings-13.1.0-py312hbb81ca0_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-cccl-13.0.85-h57928b3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cuda-cccl_win-64-13.0.85-h57928b3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.4.2-cuda13_py312h377840e_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.5.0-cuda13_py312h377840e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cuda-crt-dev_win-64-13.0.88-h57928b3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-crt-tools-13.0.88-h57928b3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-cudart-13.0.96-hac47afa_0.conda
@@ -3765,7 +3765,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-bindings-13.1.0-py313hfe59770_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-cccl-13.0.85-h57928b3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cuda-cccl_win-64-13.0.85-h57928b3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.4.2-cuda13_py313h42936fe_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.5.0-cuda13_py313h42936fe_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/cuda-crt-dev_win-64-13.0.88-h57928b3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-crt-tools-13.0.88-h57928b3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-cudart-13.0.96-hac47afa_0.conda
@@ -6792,25 +6792,6 @@ packages:
   - pkg:pypi/cuda-core?source=hash-mapping
   size: 572046
   timestamp: 1754579217155
-- conda: https://conda.anaconda.org/conda-forge/linux-64/cuda-core-0.4.2-cuda12_py312h32364ff_0.conda
-  sha256: 8d2642a8b2fa6b8cf7a7e4ad59b2de3c8a0949047d2762ab114d960fbae6d630
-  md5: 32e4469f54ed7b2d0bed628db11e2077
-  depends:
-  - __glibc >=2.17,<3.0.a0
-  - cuda-bindings >=12,<13.0a0
-  - cuda-cudart >=12.9.79,<13.0a0
-  - cuda-version >=12,<13.0a0
-  - libgcc >=14
-  - libstdcxx >=14
-  - numpy
-  - python >=3.12,<3.13.0a0
-  - python_abi 3.12.* *_cp312
-  license: Apache-2.0
-  license_family: APACHE
-  purls:
-  - pkg:pypi/cuda-core?source=hash-mapping
-  size: 997298
-  timestamp: 1763480797276
 - conda: https://conda.anaconda.org/conda-forge/linux-64/cuda-core-0.4.2-cuda13_py312h7a1ba1a_0.conda
   sha256: 7f03f051745c485e05d510ad9b9f5912c6479873254753400f525a3c1d02c824
   md5: b519489517ffe8c8f161e96bc0d9f245
@@ -6868,6 +6849,24 @@ packages:
   - pkg:pypi/cuda-core?source=hash-mapping
   size: 1035686
   timestamp: 1763480794664
+- conda: https://conda.anaconda.org/conda-forge/linux-64/cuda-core-0.5.0-cuda12_py312h32364ff_0.conda
+  sha256: 05c2bd2ac5d51154541f52348d12f728a3e16a14a7f53ed4d6524181fc6f3931
+  md5: c2d71e61738488b0f458d39c54190885
+  depends:
+  - __glibc >=2.17,<3.0.a0
+  - cuda-bindings >=12,<13.0a0
+  - cuda-cudart >=12.9.79,<13.0a0
+  - cuda-version >=12,<13.0a0
+  - libgcc >=14
+  - libstdcxx >=14
+  - numpy
+  - python >=3.12,<3.13.0a0
+  - python_abi 3.12.* *_cp312
+  license: Apache-2.0
+  purls:
+  - pkg:pypi/cuda-core?source=hash-mapping
+  size: 1376218
+  timestamp: 1766082765128
 - conda: https://conda.anaconda.org/conda-forge/linux-64/cuda-core-0.5.0-cuda13_py314h025f531_0.conda
   sha256: c98ee07eed1d14c45b1780e322004be4916aaa220eb68252d300924e72d1c65c
   md5: acf26682729f007040a96eca6ada051f
@@ -6962,25 +6961,6 @@ packages:
   - pkg:pypi/cuda-core?source=hash-mapping
   size: 559864
   timestamp: 1754579821267
-- conda: https://conda.anaconda.org/conda-forge/linux-aarch64/cuda-core-0.4.2-cuda12_py312h9bdd1b7_0.conda
-  sha256: d351a6c2cbf3d1024797fa547ea3d17a4214475d30df11effdb42588420163d4
-  md5: edfbc13e6283dd67325936ee67f7037d
-  depends:
-  - cuda-bindings >=12,<13.0a0
-  - cuda-cudart >=12.9.79,<13.0a0
-  - cuda-version >=12,<13.0a0
-  - libgcc >=14
-  - libstdcxx >=14
-  - numpy
-  - python >=3.12,<3.13.0a0
-  - python >=3.12,<3.13.0a0 *_cpython
-  - python_abi 3.12.* *_cp312
-  license: Apache-2.0
-  license_family: APACHE
-  purls:
-  - pkg:pypi/cuda-core?source=hash-mapping
-  size: 972061
-  timestamp: 1763481143127
 - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/cuda-core-0.4.2-cuda13_py312h92e596d_0.conda
   sha256: df40fdea38db778ec883b0c782caaff45e096621b41302fb8396a2a72f44d039
   md5: 5e3ffad9f949d8085aea29028c4ce680
@@ -7038,6 +7018,24 @@ packages:
   - pkg:pypi/cuda-core?source=hash-mapping
   size: 1022854
   timestamp: 1763480853066
+- conda: https://conda.anaconda.org/conda-forge/linux-aarch64/cuda-core-0.5.0-cuda12_py312h9bdd1b7_0.conda
+  sha256: 87a8c9f0167a88904f8ef192b4680f911d1ac06a87aadda9356ad8320f2dacc6
+  md5: 052a2928a22e811017d5384116d5f795
+  depends:
+  - cuda-bindings >=12,<13.0a0
+  - cuda-cudart >=12.9.79,<13.0a0
+  - cuda-version >=12,<13.0a0
+  - libgcc >=14
+  - libstdcxx >=14
+  - numpy
+  - python >=3.12,<3.13.0a0
+  - python >=3.12,<3.13.0a0 *_cpython
+  - python_abi 3.12.* *_cp312
+  license: Apache-2.0
+  purls:
+  - pkg:pypi/cuda-core?source=hash-mapping
+  size: 1399569
+  timestamp: 1766082824212
 - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/cuda-core-0.5.0-cuda13_py314hd7bf176_0.conda
   sha256: ace40afa7f8f6b85a2ada1cbd58edb90013bc1883454d89aec3684fab70d3bd0
   md5: e9d5251c906dd04ae65df1d1b5a4aeb7
@@ -7124,9 +7122,9 @@ packages:
   - pkg:pypi/cuda-core?source=hash-mapping
   size: 306304
   timestamp: 1754579077825
-- conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.4.2-cuda12_py312hb72f0b0_0.conda
-  sha256: a9507d9cd5ab09c8c07c37939585adc2adb1135eabb8b81c8d9b0ede0b29c1ff
-  md5: 7eba2c3b64cd3d4cbf60153ea33113e3
+- conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.5.0-cuda12_py312hb72f0b0_0.conda
+  sha256: 896d54b7e63d84f56a21910a65316decc2ef314e56d91e5f9af95f0abbfc96a5
+  md5: fff558b337e865bedbc805eb61e5c831
   depends:
   - cuda-bindings >=12,<13.0a0
   - cuda-cudart >=12.9.79,<13.0a0
@@ -7138,14 +7136,13 @@ packages:
   - vc >=14.3,<15
   - vc14_runtime >=14.44.35208
   license: Apache-2.0
-  license_family: APACHE
   purls:
   - pkg:pypi/cuda-core?source=hash-mapping
-  size: 472282
-  timestamp: 1763481146933
-- conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.4.2-cuda13_py312h377840e_0.conda
-  sha256: e5bb988b2608244e19e1e3f83e7c1215803f27428d3f3defc95bbe09909707b8
-  md5: 6e882b12359b36957e089f91d39102fd
+  size: 633110
+  timestamp: 1766082875755
+- conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.5.0-cuda13_py312h377840e_0.conda
+  sha256: 2cd2cc2c9b6fa78a64d189c68a8e3d6a2cbe298dd45854b046883a0dccf4e4b0
+  md5: 95a16ed6a393508ef83df2a5777a5ae2
   depends:
   - cuda-bindings >=13,<14.0a0
   - cuda-version >=13,<14.0a0
@@ -7156,14 +7153,13 @@ packages:
   - vc >=14.3,<15
   - vc14_runtime >=14.44.35208
   license: Apache-2.0
-  license_family: APACHE
   purls:
   - pkg:pypi/cuda-core?source=hash-mapping
-  size: 473618
-  timestamp: 1763480914774
-- conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.4.2-cuda13_py313h42936fe_0.conda
-  sha256: ac36eb0e6e42d83ab8b1bb01c1f21881f148afe96fcbe7ed04a525b02513b9d2
-  md5: 898e740b0bf238c46166e8c7ff3ae15f
+  size: 635695
+  timestamp: 1766082855682
+- conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.5.0-cuda13_py313h42936fe_0.conda
+  sha256: 9e264f24d64e216c1d7c52ce38066bc76aa3e66eddd4427a3097d7ab1eb81ea1
+  md5: 574e5d1cc0f63d4b7e8b38fc91183dd7
   depends:
   - cuda-bindings >=13,<14.0a0
   - cuda-version >=13,<14.0a0
@@ -7174,11 +7170,10 @@ packages:
   - vc >=14.3,<15
   - vc14_runtime >=14.44.35208
   license: Apache-2.0
-  license_family: APACHE
   purls:
   - pkg:pypi/cuda-core?source=hash-mapping
-  size: 476231
-  timestamp: 1763481127814
+  size: 634308
+  timestamp: 1766082761144
 - conda: https://conda.anaconda.org/conda-forge/win-64/cuda-core-0.5.0-cuda13_py314hc4d8058_0.conda
   sha256: a071ea698675741f74dd767dfa8075368f8b1a31e1a6100ad8c52e20288fc3be
   md5: 8eec02e7af03d2c323f91545c37ef5a9

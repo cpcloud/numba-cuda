@@ -7,6 +7,8 @@ import sys
 import ctypes
 import collections
 import functools
+import itertools
+import operator
 import types as pytypes
 import weakref
 from contextlib import ExitStack
@@ -41,7 +43,7 @@ from numba.cuda.compiler import (
 from numba.cuda.core import sigutils, config, entrypoints
 from numba.cuda.flags import Flags
 from numba.cuda.cudadrv import driver, nvvm
-
+from cuda.core.utils import StridedMemoryView
 from numba.cuda.locks import module_init_lock
 from numba.cuda.core.caching import Cache, CacheImpl, NullCache
 from numba.cuda.descriptor import cuda_target
@@ -76,6 +78,37 @@ cuda_fp16_math_funcs = [
 ]
 
 reshape_funcs = ["nocopy_empty_reshape", "numba_attempt_nocopy_reshape"]
+
+
+@functools.cache
+def _strides_in_bytes(
+    *,
+    shape: tuple[int, ...],
+    strides_in_counts: tuple[int, ...] | None,
+    itemsize: int,
+) -> tuple[int, ...]:
+    """Convert strides from counts to bytes for a StridedMemoryView."""
+    if not shape:
+        return ()
+    if strides_in_counts is None:
+        # TODO: cache the conversion from strides-in-counts to
+        # strides-in-bytes if possible
+        strides_in_counts = reversed(
+            tuple(
+                itertools.accumulate(
+                    reversed(shape[1:]),
+                    operator.mul,
+                    initial=1,
+                )
+            )
+        )
+    assert strides_in_counts is not None
+    if not strides_in_counts:
+        return ()
+
+    # strides are in counts in StridedMemoryView, convert to bytes
+    # by multiplying by itemsize
+    return tuple(map(itemsize.__mul__, strides_in_counts))
 
 
 class _Kernel(serialize.ReduceMixin):
@@ -540,6 +573,7 @@ class _Kernel(serialize.ReduceMixin):
 
         if isinstance(ty, types.Array):
             devary = wrap_arg(val).to_device(retr, stream)
+            assert isinstance(devary, StridedMemoryView), type(devary)
 
             meminfo = 0
             parent = 0
@@ -552,10 +586,16 @@ class _Kernel(serialize.ReduceMixin):
             # however, this saves a noticeable amount of overhead in kernel
             # invocation
             kernelargs.append(devary.size)
-            kernelargs.append(devary.dtype.itemsize)
-            kernelargs.append(devary.device_ctypes_pointer.value)
-            kernelargs.extend(devary.shape)
-            kernelargs.extend(devary.strides)
+            kernelargs.append(itemsize := devary.dtype.itemsize)
+            kernelargs.append(devary.ptr)
+            kernelargs.extend(shape := devary.shape)
+            kernelargs.extend(
+                _strides_in_bytes(
+                    shape=shape,
+                    strides_in_counts=devary.strides,
+                    itemsize=itemsize,
+                )
+            )
 
         elif isinstance(ty, types.CPointer):
             # Pointer arguments should be a pointer-sized integer

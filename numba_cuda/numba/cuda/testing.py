@@ -336,4 +336,7 @@ class ForeignArray(object):
 
     def __init__(self, arr):
         self._arr = arr
-        self.__cuda_array_interface__ = arr.__cuda_array_interface__
+        try:
+            self.__dlpack__ = arr.__dlpack__
+        except AttributeError:
+            self.__cuda_array_interface__ = arr.__cuda_array_interface__

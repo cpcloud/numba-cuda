@@ -28,7 +28,7 @@ import subprocess
 import tempfile
 import re
 from itertools import product
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from ctypes import (
     c_int,
     byref,
@@ -58,6 +58,10 @@ from numba.cuda._compat import (
     Linker,
     LinkerOptions,
     ObjectCode,
+)
+
+from cuda.bindings.utils import get_cuda_native_handle
+from cuda.core import (
     Stream as ExperimentalStream,
     Device as ExperimentalDevice,
 )
@@ -626,7 +630,7 @@ class Device:
         return self.compute_capability >= (8, 0)
 
 
-class BaseCUDAMemoryManager(object, metaclass=ABCMeta):
+class BaseCUDAMemoryManager(ABC):
     """Abstract base class for External Memory Management (EMM) Plugins."""
 
     def __init__(self, *args, **kwargs):
@@ -1012,7 +1016,7 @@ class _SizeNotSet(int):
 _SizeNotSet = _SizeNotSet()
 
 
-class _PendingDeallocs(object):
+class _PendingDeallocs:
     """
     Pending deallocations of a context (or device since we are using the primary
     context). The capacity defaults to being unset (_SizeNotSet) but can be
@@ -1055,8 +1059,8 @@ class _PendingDeallocs(object):
         """
         if not self.is_disabled:
             while self._cons:
-                [dtor, handle, size] = self._cons.popleft()
-                _logger.info("dealloc: %s %s bytes", dtor.__name__, size)
+                dtor, handle, size = self._cons.popleft()
+                _logger.info(f"dealloc: {dtor.__name__} {size} bytes")
                 dtor(handle)
 
             self._size = 0
@@ -1098,7 +1102,7 @@ MemoryInfo = namedtuple("MemoryInfo", "free,total")
 """
 
 
-class Context(object):
+class Context:
     """
     This object wraps a CUDA Context resource.
 
@@ -1674,7 +1678,7 @@ class IpcHandle(object):
         )
 
 
-class MemoryPointer(object):
+class MemoryPointer:
     """A memory pointer that owns a buffer, with an optional finalizer. Memory
     pointers provide reference counting, and instances are initialized with a
     reference count of 1.
@@ -1779,11 +1783,11 @@ class MemoryPointer(object):
             return view
 
     @property
-    def device_ctypes_pointer(self):
+    def device_ctypes_pointer(self) -> drvapi.cu_device_ptr:
         return drvapi.cu_device_ptr(int(self.device_pointer))
 
     @property
-    def device_pointer_value(self):
+    def device_pointer_value(self) -> int | None:
         return int(self.device_pointer) or None
 
 
@@ -1797,8 +1801,8 @@ class AutoFreePointer(MemoryPointer):
     """
 
     def __init__(self, *args, **kwargs):
-        super(AutoFreePointer, self).__init__(*args, **kwargs)
-        # Releease the self reference to the buffer, so that the finalizer
+        super().__init__(*args, **kwargs)
+        # Release the self reference to the buffer, so that the finalizer
         # is invoked if all the derived pointers are gone.
         self.refct -= 1
 

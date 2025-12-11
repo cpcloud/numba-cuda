@@ -17,6 +17,8 @@ from numba.cuda.testing import unittest, CUDATestCase
 from numba.cuda.testing import skip_on_cudasim
 import contextlib
 
+from cuda.core import Device
+
 ptx1 = """
     .version 1.4
     .target sm_10, map_f64_to_f32

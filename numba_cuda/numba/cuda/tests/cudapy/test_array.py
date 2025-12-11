@@ -342,3 +342,32 @@ class TestCudaArray(CUDATestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+    # from cuda.core.utils import StridedMemoryView
+    # from cuda.core import Stream, Device
+    #
+    # dev = Device()
+    # dev.set_current()
+    #
+    # stream_ptr = 0
+    # stream = Stream.from_handle(stream_ptr)
+    #
+    # x = np.arange(10, dtype=np.double)
+    # y = np.ndarray(shape=10 * 8, buffer=x, dtype=np.byte)
+    # arr_in = np.ndarray(9, buffer=y[4:-4], dtype=np.double)
+    #
+    # smv_host_in = StridedMemoryView.from_dlpack(arr_in, stream_ptr=stream_ptr)
+    #
+    # buf = dev.memory_resource.allocate(
+    #     smv_host_in.layout.to_dense().required_size_in_bytes()
+    # )
+    # smv_dev_in = StridedMemoryView.from_buffer(
+    #     buf, smv_host_in.layout.to_dense(), dtype=smv_host_in.dtype
+    # )
+    # smv_host_in.copy_to(smv_dev_in, stream)
+    #
+    # arr_out = np.empty_like(arr_in)
+    # smv_host_out = StridedMemoryView.from_dlpack(arr_out, stream_ptr=stream_ptr)
+    # print(arr_out)
+    # smv_dev_in.copy_to(smv_host_out, stream)
+    # print(arr_out)

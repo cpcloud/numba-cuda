@@ -15,6 +15,9 @@ from ctypes import c_void_p
 
 import numpy as np
 
+from cuda.core.utils import StridedMemoryView
+from cuda.core import Buffer
+
 from numba.cuda.cudadrv import devices, dummyarray
 from numba.cuda.cudadrv import driver as _driver
 from numba.cuda import types
@@ -392,12 +395,16 @@ class DeviceNDArrayBase:
             gpu_data=self.gpu_data,
         )
 
-    @property
+    @functools.cached_property
     def nbytes(self):
         # Note: not using `alloc_size`.  `alloc_size` reports memory
         # consumption of the allocation, not the size of the array
         # https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.nbytes.html
         return self.dtype.itemsize * self.size
+
+    @functools.cached_property
+    def _strides_in_counts(self) -> tuple[int, ...]:
+        return tuple(map(self.dtype.itemsize.__rfloordiv__, self.strides))
 
 
 class DeviceRecord(DeviceNDArrayBase):
@@ -931,6 +938,77 @@ def auto_device(obj, stream=0, copy=True, user_explicit=False):
                     )
                     warn(NumbaPerformanceWarning(msg))
             devobj.copy_to_device(obj, stream=stream)
+        return devobj, True
+
+
+def _to_strided_memory_view(obj, stream=0, copy=True, user_explicit=False):
+    if _driver.is_device_memory(obj):
+        strides_in_counts = obj._strides_in_counts
+        handle = obj.device_ctypes_pointer.value
+        buf = Buffer.from_handle(handle, size=obj.nbytes, owner=obj)
+        smv = StridedMemoryView.from_buffer(
+            buf,
+            shape=obj.shape,
+            strides=strides_in_counts,
+            dtype=obj.dtype,
+        )
+        return smv, False
+    elif not isinstance(obj, np.ndarray) and hasattr(obj, "__dlpack__"):
+        # numpy arrays need to be copied to the device
+        # so we can't view them as SMVs until then
+        #
+        # not sure if this is true in general, since what if a numpy array was
+        # constructed using `np.from_dlpack`?
+        return StridedMemoryView.from_dlpack(
+            obj, stream_ptr=getattr(stream, "handle", stream)
+        ), False
+    elif hasattr(obj, "__cuda_array_interface__"):
+        return StridedMemoryView.from_cuda_array_interface(
+            obj, stream_ptr=getattr(stream, "handle", stream)
+        ), False
+    else:
+        if isinstance(obj, np.void):
+            devobj = from_record_like(obj, stream=stream)
+        else:
+            array_obj = np.array(
+                obj,
+                copy=False if numpy_version < (2, 0) else None,
+                subok=True,
+            )
+            hostobj = StridedMemoryView.from_dlpack(
+                array_obj, stream_ptr=getattr(stream, "handle", stream)
+            )
+            nbytes = array_obj.nbytes
+            ctx = devices.get_context()
+            # TODO: this might need to be slotted into the extensible memory
+            # manager API (EMM) somehow.
+            buf = ctx.device._dev.memory_resource.allocate(nbytes)
+            devobj = StridedMemoryView.from_buffer(
+                buf,
+                shape=hostobj.shape,
+                strides=hostobj.strides,
+                dtype=hostobj.dtype,
+            )
+        if copy:
+            if (
+                config.CUDA_WARN_ON_IMPLICIT_COPY
+                and not config.DISABLE_PERFORMANCE_WARNINGS
+            ):
+                if not user_explicit and (
+                    not isinstance(obj, DeviceNDArray)
+                    and isinstance(obj, np.ndarray)
+                ):
+                    msg = (
+                        "Host array used in CUDA kernel will incur "
+                        "copy overhead to/from device."
+                    )
+                    warn(NumbaPerformanceWarning(msg))
+            _driver.driver.cuMemcpyHtoDAsync(
+                devobj.ptr,
+                hostobj.ptr,
+                array_obj.nbytes,
+                getattr(stream, "handle", stream),
+            )
         return devobj, True
 
 
