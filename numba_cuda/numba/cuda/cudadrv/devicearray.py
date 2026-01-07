@@ -16,7 +16,6 @@ from ctypes import c_void_p
 import numpy as np
 
 from cuda.core.utils import StridedMemoryView
-from cuda.core import Buffer
 
 from numba.cuda.cudadrv import devices, dummyarray
 from numba.cuda.cudadrv import driver as _driver
@@ -403,8 +402,19 @@ class DeviceNDArrayBase:
         return self.dtype.itemsize * self.size
 
     @functools.cached_property
-    def _strides_in_counts(self) -> tuple[int, ...]:
-        return tuple(map(self.dtype.itemsize.__rfloordiv__, self.strides))
+    def _strided_memory_view_shim(self):
+        flags = self.flags
+        return _StridedMemoryViewShim(
+            ptr=self.device_ctypes_pointer.value,
+            shape=self.shape,
+            dtype=self.dtype,
+            size=self.size,
+            _layout=_StridedLayoutShim(
+                strides_in_bytes=self.strides,
+                is_contiguous_c=flags["C_CONTIGUOUS"],
+                is_contiguous_f=flags["F_CONTIGUOUS"],
+            ),
+        )
 
 
 class DeviceRecord(DeviceNDArrayBase):
@@ -959,18 +969,45 @@ def _make_strided_memory_view(obj, *, stream_ptr) -> StridedMemoryView:
     return StridedMemoryView.from_any_interface(obj, stream_ptr=stream_ptr)
 
 
+class _StridedLayoutShim:
+    __slots__ = ("strides_in_bytes", "is_contiguous_c", "is_contiguous_f")
+
+    def __init__(
+        self,
+        *,
+        strides_in_bytes: tuple[int, ...],
+        is_contiguous_c: bool,
+        is_contiguous_f: bool,
+    ) -> None:
+        self.strides_in_bytes = strides_in_bytes
+        self.is_contiguous_c = is_contiguous_c
+        self.is_contiguous_f = is_contiguous_f
+
+
+class _StridedMemoryViewShim:
+    __slots__ = ("ptr", "shape", "dtype", "size", "_layout")
+
+    def __init__(
+        self,
+        *,
+        ptr: int,
+        shape: tuple[int, ...],
+        dtype: np.dtype,
+        size: int,
+        _layout: _StridedLayoutShim,
+    ) -> None:
+        self.ptr = ptr
+        self.shape = shape
+        self.dtype = dtype
+        self.size = size
+        self._layout = _layout
+
+
 def _to_strided_memory_view(
     obj, stream=0, copy: bool = True, user_explicit: bool = False
 ) -> tuple[StridedMemoryView, bool]:
     if _driver.is_device_memory(obj):
-        handle = obj.device_ctypes_pointer.value
-        smv = StridedMemoryView.from_buffer(
-            Buffer.from_handle(handle, size=obj.nbytes, owner=obj),
-            shape=obj.shape,
-            strides=obj._strides_in_counts,
-            dtype=obj.dtype,
-        )
-        return smv, False
+        return obj._strided_memory_view_shim, False
     elif not isinstance(
         obj, (np.ndarray, _UNSUPPORTED_DLPACK_TYPES)
     ) and hasattr(obj, "__dlpack__"):
