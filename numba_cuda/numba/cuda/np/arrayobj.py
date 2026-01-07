@@ -3677,7 +3677,10 @@ def _lower_constant_device_array(context, builder, ty, pyval):
     # Calculate strides if not provided (C-contiguous)
     if strides is None:
         strides = strides_from_shape(
-            shape=shape, itemsize=itemsize, c_contiguous=True
+            shape=shape,
+            itemsize=itemsize,
+            c_contiguous=True,
+            f_contiguous=False,
         )
 
     # Embed device pointer as constant

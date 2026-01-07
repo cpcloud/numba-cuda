@@ -328,12 +328,18 @@ def _typeof_cuda_array_interface_cached(
         # F-contiguous has strides[0] == itemsize. If neither, it's "A".
         if strides[-1] == itemsize:
             c_strides = numpy_support.strides_from_shape(
-                shape=shape, itemsize=itemsize, c_contiguous=True
+                shape=shape,
+                itemsize=itemsize,
+                c_contiguous=True,
+                f_contiguous=False,
             )
             layout = "C" if all(map(operator.eq, strides, c_strides)) else "A"
         elif strides[0] == itemsize:
             f_strides = numpy_support.strides_from_shape(
-                shape=shape, itemsize=itemsize, f_contiguous=True
+                shape=shape,
+                itemsize=itemsize,
+                c_contiguous=False,
+                f_contiguous=True,
             )
             layout = "F" if all(map(operator.eq, strides, f_strides)) else "A"
         else:
