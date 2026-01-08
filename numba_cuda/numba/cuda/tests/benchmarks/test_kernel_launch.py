@@ -4,6 +4,7 @@
 import string
 from numba import cuda
 from numba.cuda.core import config
+from numba.cuda.cudadrv.devicearray import auto_device, _to_strided_memory_view
 import numpy as np
 import pytest
 from pytest import param
@@ -134,3 +135,9 @@ def test_many_args(benchmark, array_func, jit):
             func(*arrs)
 
     benchmark(bench, many_args[128, 128], *many_arrs)
+
+
+@pytest.mark.parametrize("op", [_to_strided_memory_view, auto_device])
+def test_strided_memory_view_shim(benchmark, op):
+    arr = cuda.device_array(128, dtype=np.float32)
+    benchmark(op, arr)
