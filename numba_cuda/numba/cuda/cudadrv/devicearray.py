@@ -1016,17 +1016,17 @@ def _to_strided_memory_view(
         #
         # not sure if this is true in general, since what if a numpy array was
         # constructed using `np.from_dlpack`?
-        return StridedMemoryView.from_dlpack(
-            obj, stream_ptr=int(getattr(stream, "handle", stream)) or -1
-        ), False
-    elif (desc := getattr(obj, "__cuda_array_interface__", None)) is not None:
-        smv = StridedMemoryView.from_cuda_array_interface(
-            obj, stream_ptr=int(getattr(stream, "handle", stream))
-        )
+        stream_ptr = -1
+        if config.CUDA_ARRAY_INTERFACE_SYNC:
+            stream_ptr = int(getattr(stream, "handle", stream))
 
-        if (
-            external_stream_ptr := desc.get("stream")
-        ) is not None and config.CUDA_ARRAY_INTERFACE_SYNC:
+        return StridedMemoryView.from_dlpack(obj, stream_ptr=stream_ptr), False
+    elif (desc := getattr(obj, "__cuda_array_interface__", None)) is not None:
+        external_stream_ptr = desc.get("stream", -1)
+        smv = StridedMemoryView.from_cuda_array_interface(
+            obj, stream_ptr=external_stream_ptr
+        )
+        if config.CUDA_ARRAY_INTERFACE_SYNC and external_stream_ptr != -1:
             ctx = devices.get_context()
             ext_stream = ctx.create_external_stream(external_stream_ptr)
             ext_stream.synchronize()
