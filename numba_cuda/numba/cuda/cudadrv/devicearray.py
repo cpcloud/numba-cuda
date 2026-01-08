@@ -1017,7 +1017,7 @@ def _to_strided_memory_view(
         # not sure if this is true in general, since what if a numpy array was
         # constructed using `np.from_dlpack`?
         return StridedMemoryView.from_dlpack(
-            obj, stream_ptr=getattr(stream, "handle", stream)
+            obj, stream_ptr=int(getattr(stream, "handle", stream)) or -1
         ), False
     elif (desc := getattr(obj, "__cuda_array_interface__", None)) is not None:
         smv = StridedMemoryView.from_cuda_array_interface(
