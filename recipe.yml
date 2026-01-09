@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause
+package:
+  name: numba-cuda
+  version: "0.23.0"
+
+source:
+  path: .
+
+build:
+  script: python setup.py install
+
+requirements:
+  build:
+    - cuda-compiler
+    - ${{ compiler('cxx') }}
+  host:
+    - python
+    - setuptools
+    - numpy >=2.1
+  run:
+    - python
+    - packaging
+    - numba >=0.60
+    - cuda-core >=0.3,<1
+    - cuda-bindings >=12.9,<14
+    - cuda-python >=12.9,<14
+
+about:
+  homepage: https://github.com/NVIDIA/numba-cuda
+  license: BSD-2-Clause
+  license_file: LICENSE
+  summary: The CUDA target for Numba
+  description: |
+    Numba-CUDA provides a CUDA target for the Numba Python JIT Compiler.
+  documentation: https://nvidia.github.io/numba-cuda/
