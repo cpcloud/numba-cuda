@@ -38,7 +38,7 @@ class In(ArgHint):
         devary, _ = _to_strided_memory_view(self.value, stream=stream)
         # A dummy writeback functor to keep devary alive until the kernel
         # is called.
-        retr.append(lambda: devary)
+        retr.append(lambda devary=devary: devary)
         return devary
 
 
