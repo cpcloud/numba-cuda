@@ -61,7 +61,7 @@ class Out(ArgHint):
                 hostary = _make_strided_memory_view(
                     value, stream_ptr=stream_ptr
                 )
-                nbytes = value.nbytes
+                nbytes = devary.size * devary.dtype.itemsize
                 hostptr = hostary.ptr
                 devptr = devary.ptr
                 if stream_ptr:
