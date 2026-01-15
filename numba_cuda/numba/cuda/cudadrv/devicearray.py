@@ -1037,9 +1037,9 @@ def _to_strided_memory_view(
         stream_ptr = getattr(stream, "handle", stream)
 
         ctx = devices.get_context()
-        # TODO: this might need to be slotted into the extensible memory
-        # manager API (EMM) somehow.
-        buf = ctx.device._dev.memory_resource.allocate(nbytes)
+        # TODO: potentially rebuild EMM around these (cuda-core) APIs instead
+        # of numba-cuda APIs in the future
+        buf = ctx.device._dev.memory_resource.allocate(nbytes, stream=stream)
 
         hostobj = _make_strided_memory_view(array_obj, stream_ptr=stream_ptr)
         devobj = StridedMemoryView.from_buffer(
